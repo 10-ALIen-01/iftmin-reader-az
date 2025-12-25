@@ -379,7 +379,7 @@ text_area = st.text_area(
     "Paste IFTMIN EDI here",
     value=edi_text_input,
     height=180,
-    placeholder="Paste raw EDIFACT IFTMIN (segments end with ")'"",
+    placeholder="Paste raw EDIFACT IFTMIN (segments end with ')')",
 )
 
 # Collect texts from uploaded files
