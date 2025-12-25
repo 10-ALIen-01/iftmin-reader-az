@@ -341,11 +341,11 @@ st.sidebar.markdown(
 )
 
 uploaded = st.sidebar.file_uploader("Upload IFTMIN file(s)", type=["edi", "txt"], accept_multiple_files=True)
-example_btn = st.sidebar.button("Use example from chat")
+example_btn = st.sidebar.button("Use IFTMIN example")
 
 # Add creator credit in sidebar
 st.sidebar.markdown("---")
-st.sidebar.markdown("**Created by Ali Eissa - 2025**")
+st.sidebar.markdown("**Created by Ali Eissa**")
 
 # -----------------------------
 # 🧾 Input Area
