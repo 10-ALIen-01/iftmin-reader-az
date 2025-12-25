@@ -241,14 +241,17 @@ class IFTMINParser:
                 elif tag == "TMD" and elems:
                     record["mode"] = elems[0].split(":")[-1]
                 elif tag == "LOC" and elems:
+                    # FIXED: Properly parse LOC segments
                     # LOC+7+City  / LOC+25+Country / LOC+193+Route
-                    first = elems[0]
-                    if first.startswith("7+") or first.startswith("7"):
-                        record["destination_city"] = first.split("+")[-1]
-                    elif first.startswith("25+") or first.startswith("25"):
-                        record["destination_country"] = first.split("+")[-1]
-                    elif first.startswith("193+") or first.startswith("193"):
-                        record["route"] = first.split("+")[-1]
+                    qualifier = elems[0]  # e.g., "7", "25", "193"
+                    if len(elems) > 1:
+                        value = elems[1]  # e.g., "Malatya", "Turkey", "MNG-TR-STCO"
+                        if qualifier == "7":
+                            record["destination_city"] = value
+                        elif qualifier == "25":
+                            record["destination_country"] = value
+                        elif qualifier == "193":
+                            record["route"] = value
                 elif tag == "MOA" and elems:
                     # MOA+<qual>:<amount>
                     qual, amt = (elems[0].split(":") + [None])[:2]
@@ -340,11 +343,18 @@ st.sidebar.markdown(
 uploaded = st.sidebar.file_uploader("Upload IFTMIN file(s)", type=["edi", "txt"], accept_multiple_files=True)
 example_btn = st.sidebar.button("Use example from chat")
 
+# Add creator credit in sidebar
+st.sidebar.markdown("---")
+st.sidebar.markdown("**Created by Ali Eissa - 2025**")
+
 # -----------------------------
 # 🧾 Input Area
 # -----------------------------
 st.title("IFTMIN Decoder ✨")
 st.caption("Transforms EDIFACT IFTMIN manifests into clean, human-friendly views and exports.")
+
+# Add creator credit under title as well
+st.markdown("*Created by Ali Eissa - 2025*")
 
 if example_btn:
     edi_text_input = (
@@ -570,5 +580,22 @@ with st.expander("🔎 Raw segments (parsed)"):
         st.markdown(f"**{fname}**")
         for tag, elems in split_segments(content):
             st.code(f"{tag}+{' + '.join(elems)}'", language="edi")
+
+# Add final footer with creator credit
+st.markdown("---")
+st.markdown("### 📝 About")
+st.markdown("""
+This IFTMIN Decoder is designed to parse EDIFACT IFTMIN messages from Amazon/MNG logistics, 
+extracting shipment details, item information, and consignee data into a structured format.
+
+**Features:**
+- Parse single or multiple IFTMIN files
+- Extract header information (manifest number, dates, parties)
+- Parse shipment groups with weights, dimensions, and references
+- Extract item-level data (ASIN, quantity, unit price)
+- Export data to CSV for further analysis
+
+**Created by Ali Eissa - 2025**
+""")
 
 st.success("Done! If you need XML cross-checking, we can add an XML tab later.")
